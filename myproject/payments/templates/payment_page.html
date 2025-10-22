@@ -3,20 +3,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment for {{ booking.event.title }}</title>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #fff;
-      color: #17223b;
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(ellipse at center, #f8f6ff 60%, #f1eafc 100%);
+      color: #17223b;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      padding: 20px;
     }
 
     .payment-card {
@@ -25,7 +31,7 @@
       box-shadow: 0 6px 30px rgba(0,0,0,0.08);
       padding: 40px 50px;
       max-width: 480px;
-      width: 90%;
+      width: 100%;
       text-align: center;
       transition: all 0.3s ease;
     }
@@ -35,11 +41,30 @@
       box-shadow: 0 10px 36px rgba(0,0,0,0.12);
     }
 
+    .logo-container {
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      display: inline-block;
+      font-family: sans-serif;
+      font-weight: 900;
+      font-size: 24px;
+      letter-spacing: 2px;
+      line-height: 0.8;
+      text-transform: uppercase;
+      color: #fff;
+      background: linear-gradient(90deg, orange, orange);
+      padding: 10px 18px;
+      clip-path: polygon(0 0, 100% 0, 100% 90%, 90% 100%, 0 100%);
+    }
+
     h1 {
       font-size: 1.8em;
       font-weight: 600;
       color: #17223b;
       margin-bottom: 15px;
+      line-height: 1.3;
     }
 
     p {
@@ -53,33 +78,51 @@
       font-weight: 600;
     }
 
+    .payment-details {
+      background: #f9f9f9;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .payment-details p {
+      margin: 12px 0;
+      font-size: 1.05em;
+    }
+
     #rzp-button1 {
-      background: #fe9837;
+      background: linear-gradient(135deg, #fe9837 0%, #e67f1c 100%);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 14px 30px;
+      border-radius: 12px;
+      padding: 16px 40px;
       font-size: 1.1em;
       font-weight: 600;
       cursor: pointer;
       margin-top: 25px;
       transition: all 0.3s ease;
+      width: 100%;
+      box-shadow: 0 4px 15px rgba(254, 152, 55, 0.3);
     }
 
     #rzp-button1:hover {
-      background: #e67f1c;
-      transform: scale(1.03);
+      background: linear-gradient(135deg, #e67f1c 0%, #d76e15 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(254, 152, 55, 0.4);
     }
 
-    .logo {
-      font-weight: 700;
-      font-size: 24px;
-      color: #17223b;
-      background: #ffd700;
-      padding: 8px 16px;
-      border-radius: 6px;
-      display: inline-block;
-      margin-bottom: 20px;
+    #rzp-button1:active {
+      transform: translateY(0);
+    }
+
+    .secure-badge {
+      margin-top: 20px;
+      padding: 12px;
+      background: #e8f5e9;
+      border-radius: 8px;
+      color: #2e7d32;
+      font-size: 0.9em;
+      font-weight: 500;
     }
 
     footer {
@@ -89,29 +132,109 @@
       text-align: center;
       font-size: 0.9em;
       color: #777;
+      padding: 0 20px;
+    }
+
+    /* Mobile Styles */
+    @media(max-width: 600px) {
+      body {
+        padding: 15px;
+      }
+
+      .payment-card {
+        padding: 30px 20px;
+        border-radius: 12px;
+      }
+
+      .logo {
+        font-size: 18px;
+        padding: 8px 14px;
+      }
+
+      h1 {
+        font-size: 1.4em;
+        margin-bottom: 12px;
+      }
+
+      p {
+        font-size: 0.95em;
+      }
+
+      .payment-details {
+        padding: 15px;
+        margin: 15px 0;
+      }
+
+      .payment-details p {
+        font-size: 0.95em;
+        margin: 10px 0;
+      }
+
+      #rzp-button1 {
+        padding: 14px 30px;
+        font-size: 1em;
+        margin-top: 20px;
+      }
+
+      .secure-badge {
+        font-size: 0.85em;
+        padding: 10px;
+      }
+
+      footer {
+        font-size: 0.8em;
+        bottom: 10px;
+      }
+    }
+
+    @media(max-width: 400px) {
+      .payment-card {
+        padding: 25px 15px;
+      }
+
+      .logo {
+        font-size: 16px;
+        padding: 7px 12px;
+      }
+
+      h1 {
+        font-size: 1.2em;
+      }
+
+      p {
+        font-size: 0.9em;
+      }
+
+      #rzp-button1 {
+        font-size: 0.95em;
+        padding: 12px 25px;
+      }
     }
   </style>
 </head>
 
 <body>
   <div class="payment-card">
-    <div>
-      <span class="logo" style="display:inline-block; width:7cm; text-align:center;
-font-family:sans-serif; font-weight:900; font-size:24px; letter-spacing:2px; 
-line-height:0.8; text-transform:uppercase; color:#fff; 
-background:linear-gradient(90deg,orange,orange);
-padding:10px 18px; clip-path:polygon(0 0,100% 0,100% 90%,90% 100%,0 100%);">
-TicketMallu
-</span>
+    <div class="logo-container">
+      <span class="logo">TicketMallu</span>
     </div>
-    <h1>Payment for <span class="highlight">{{ booking.event.title }}</span></h1>
-    <p>Seats booked: <span class="highlight">{{ booking.seats_booked }}</span></p>
-    <p>Total Amount: <span class="highlight">₹{{ amount|floatformat:2 }}</span></p>
+    
+    <h1>Complete Your Payment</h1>
+    
+    <div class="payment-details">
+      <p><strong>Event:</strong> <span class="highlight">{{ booking.event.title }}</span></p>
+      <p><strong>Seats:</strong> <span class="highlight">{{ booking.seats_booked }}</span></p>
+      <p style="font-size: 1.2em; margin-top: 15px;"><strong>Total Amount:</strong> <span class="highlight">₹{{ amount|floatformat:2 }}</span></p>
+    </div>
 
-    <button id="rzp-button1">Pay Now</button>
+    <button id="rzp-button1">🔒 Pay Securely</button>
+    
+    <div class="secure-badge">
+      🛡️ 100% Secure Payment via Razorpay
+    </div>
   </div>
 
-  <footer>© 2025 | Zomato | Secure Payments</footer>
+ 
 
   <script>
     var options = {
