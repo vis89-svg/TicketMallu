@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if event %}Edit Event{% else %}Create Event{% endif %}</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #fff;
+      color: #17223b;
+      min-height: 100vh;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      padding: 40px 50px;
+      max-width: 520px;
+      width: 100%;
+      transition: 0.3s ease;
+    }
+
+    .container:hover {
+      box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+      transform: translateY(-3px);
+    }
+
+    h1 {
+      text-align: center;
+      color: #17223b;
+      font-size: 26px;
+      margin-bottom: 25px;
+      font-weight: 700;
+    }
+
+    .messages {
+      list-style: none;
+      margin-bottom: 20px;
+      padding: 0;
+    }
+
+    .messages li {
+      background: #fff9eb;
+      color: #a66300;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      border-left: 4px solid #fe9837;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 8px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="datetime-local"],
+    input[type="file"],
+    select {
+      padding: 12px 14px;
+      border: 2px solid #e6e6e6;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #f9f9f9;
+      transition: all 0.3s ease;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #fe9837;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(254,152,55,0.15);
+    }
+
+    input[type="file"] {
+      cursor: pointer;
+      background: #fff;
+    }
+
+    .image-preview {
+      margin-top: 10px;
+      padding: 12px;
+      background: #fff5eb;
+      border-radius: 8px;
+    }
+
+    .image-preview img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      display: block;
+    }
+
+    .image-preview p {
+      color: #444;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    button[type="submit"] {
+      padding: 14px;
+      background: linear-gradient(90deg, #fe9837, #e67f1c);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 10px;
+      box-shadow: 0 5px 18px rgba(254,152,55,0.4);
+    }
+
+    button[type="submit"]:hover {
+      background: linear-gradient(90deg, #e67f1c, #fe9837);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(254,152,55,0.5);
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #fe9837;
+      text-decoration: none;
+      font-weight: 600;
+      text-align: center;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+      color: #e67f1c;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 25px 20px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>{% if event %}Edit Event{% else %}Create Event{% endif %}</h1>
+
+    {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label>Title:</label>
+        <input type="text" name="title" value="{{ event.title|default:'' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label>Date:</label>
+        <input type="datetime-local" name="date" value="{{ event.date|date:'Y-m-dTH:i'|default:'' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label>Location:</label>
+        <select name="location" required>
+          <option value="">Select a location</option>
+          <option value="Thiruvananthapuram" {% if event.location == "Thiruvananthapuram" %}selected{% endif %}>Thiruvananthapuram</option>
+          <option value="Kochi" {% if event.location == "Kochi" %}selected{% endif %}>Kochi</option>
+          <option value="Kozhikode" {% if event.location == "Kozhikode" %}selected{% endif %}>Kozhikode</option>
+          <option value="Thrissur" {% if event.location == "Thrissur" %}selected{% endif %}>Thrissur</option>
+          <option value="Alappuzha" {% if event.location == "Alappuzha" %}selected{% endif %}>Alappuzha</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Category:</label>
+        <select name="category" required>
+          <option value="">Select a category</option>
+          <option value="music" {% if event.category == "music" %}selected{% endif %}>🎵 Arts and Music</option>
+          <option value="industrial" {% if event.category == "industrial" %}selected{% endif %}>⚙️ Industrial Engineering</option>
+          <option value="health" {% if event.category == "health" %}selected{% endif %}>💊 Health & Wellness</option>
+          <option value="education" {% if event.category == "education" %}selected{% endif %}>📚 Education & Training</option>
+          <option value="travel" {% if event.category == "travel" %}selected{% endif %}>✈️ Travel & Tourism</option>
+          <option value="sports" {% if event.category == "sports" %}selected{% endif %}>⚽ Sports & Travel</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Total Seats:</label>
+        <input type="number" name="total_seats" value="{{ event.total_seats|default:'' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label>Available Seats:</label>
+        <input type="number" name="available_seats" value="{{ event.available_seats|default:'' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label>Price (₹):</label>
+        <input type="number" name="price" value="{{ event.price|default:'' }}" step="0.01" required>
+      </div>
+
+      <div class="form-group">
+        <label>Event Image:</label>
+        {% if event.image %}
+        <div class="image-preview">
+          <p>Current image:</p>
+          <img src="{{ event.image.url }}" alt="Current event image">
+        </div>
+        {% endif %}
+        <input type="file" name="image" accept="image/*">
+      </div>
+
+      <button type="submit">{% if event %}Update{% else %}Create{% endif %} Event</button>
+    </form>
+
+    <a href="{% url 'event-list' %}" class="back-link">← Back to Events</a>
+  </div>
+</body>
+</html>

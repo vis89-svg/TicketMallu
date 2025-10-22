@@ -1,0 +1,510 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Ticketnadu – Regional Event Ticketing Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; font-family: 'Segoe UI', Arial, sans-serif; background:#fff; color:#232324; }
+    header { background:#fff; padding:20px 0; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+    nav { width:90%; margin:auto; display:flex; justify-content:space-between; align-items:center; }
+    .logo { font-weight:700; font-size:24px; color:#17223b; background:#ffd700; padding:8px 16px; border-radius:4px; display:flex; align-items:center; gap:8px; }
+    nav ul { display:flex; gap:32px; list-style:none; margin:0; padding:0; align-items:center; }
+    nav a { color:#222; text-decoration:none; font-weight:600; font-size:14px; transition: color 0.3s; }
+    nav a:hover { color:#e91e63; }
+    .cta-btn { background:#e91e63; color:#fff; padding:12px 24px; border-radius:4px; text-decoration:none; font-weight:bold; transition: all 0.3s ease; }
+    .cta-btn:hover { background:#c2185b; }
+    .hero { text-align:center; padding:60px 20px 50px; background: radial-gradient(ellipse at center, #f8f6ff 60%, #f1eafc 100%); }
+    .hero .subtitle { font-size:1.15em; color:#ffa500; font-style:italic; margin-bottom:15px; font-weight:500; }
+    .hero h1 { font-size:3.5em; color:#17223b; margin:0 0 40px 0; font-weight:700; line-height:1.1; }
+    
+    /* Modern Search Bar Styles */
+    .modern-search-container {
+      width: 80%;
+      max-width: 1200px;
+      margin: 24px auto;
+      height: 47px;
+      background: #fff;
+      border-radius: 24px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 32px 24px;
+      box-shadow: 0 6px 32px rgba(180, 168, 245, 0.16);
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    
+    .search-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 140px;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .search-item .material-icons {
+      font-size: 26px;
+      color: #282877;
+    }
+    
+    .search-item input[type="text"],
+    .search-item select {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 18px;
+      color: #444;
+      padding: 4px 0;
+      width: 100%;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .search-item select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+    
+    .search-divider {
+      height: 42px;
+      width: 1px;
+      background: #eee;
+    }
+    
+    .search-button {
+      height: 64px;
+      width: 64px;
+      background: #ffd100;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .search-button:hover {
+      background: #ffed4e;
+      transform: scale(1.05);
+    }
+    
+    .search-button .material-icons {
+      font-size: 34px;
+      color: #fff;
+    }
+    
+    .clear-btn { 
+      color:#e91e63; 
+      font-weight:bold; 
+      text-decoration:none; 
+      margin-left:10px;
+      font-size: 16px;
+    }
+    
+    .messages { margin:20px auto; width:90%; max-width:1100px; }
+    .messages li { list-style:none; color:#fe4b37; margin:4px 0; }
+    section { width:95%; max-width:1100px; margin:36px auto; }
+    .section-title { font-size:1.35em; color:#fe9837; font-weight:bold; }
+    .events-grid { display:flex; flex-wrap:wrap; gap:28px; margin-top:20px; justify-content:flex-start; }
+    
+    .event-card { 
+      background:#fff; 
+      flex:1 1 300px; 
+      min-width:280px; 
+      max-width:380px; 
+      border-radius:12px; 
+      box-shadow:0 2px 12px rgba(0,0,0,0.08); 
+      display:flex; 
+      flex-direction:column; 
+      overflow:hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .event-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    
+    .event-card-image {
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+    
+    .event-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .event-card-content {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .event-card h3 { 
+      margin:0 0 12px; 
+      font-size:1.25em; 
+      color:#222; 
+      line-height: 1.3;
+    }
+    
+    .event-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      font-size: 0.9em;
+      color: #666;
+    }
+    
+    .event-meta::before {
+      content: "📍";
+      font-size: 1.1em;
+    }
+    
+    .event-date {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      font-size: 0.9em;
+      color: #666;
+    }
+    
+    .event-date::before {
+      content: "📅";
+      font-size: 1.1em;
+    }
+    
+    .event-seats {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 15px;
+      font-size: 0.9em;
+      color: #666;
+    }
+    
+    .event-seats::before {
+      content: "🎫";
+      font-size: 1.1em;
+    }
+    
+    .event-card .actions { 
+      margin-top:auto; 
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .event-card .actions a, 
+    .event-card .actions form button { 
+      flex: 1;
+      min-width: 80px;
+      text-decoration:none; 
+      background:#fe9837; 
+      color:#fff; 
+      border:none; 
+      border-radius:6px; 
+      padding:10px 12px; 
+      font-size:0.9em; 
+      cursor:pointer; 
+      font-weight: 600;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+    
+    .event-card .actions a:hover, 
+    .event-card .actions form button:hover { 
+      background:#e67f1c;
+      transform: translateY(-2px);
+    }
+    
+    footer { background:#222; color:#eee; padding:44px 0 18px; margin-top:40px; }
+    .footer-content { width:93%; margin:auto; display:flex; flex-wrap:wrap; gap:36px; }
+    .footer-col h4 { color:#fe9837; margin-bottom:6px; }
+    .footer-links, .policy-links { list-style:none; margin:14px 0 0 0; padding:0; }
+    .footer-links a, .policy-links a { color:#eee; text-decoration:none; display:inline-block; margin:6px 0; }
+    .footer-social { display:flex; gap:10px; margin-top:12px; }
+    .footer-social a { color:#fff; text-decoration:none; font-size:1.1em; padding:6px; background:rgba(255,255,255,0.05); border-radius:6px; }
+    .footer-bottom { text-align:center; margin-top:38px; font-size:1em; color:#ccc; }
+    
+    @media(max-width:900px){ 
+      .events-grid{flex-direction:column;} 
+      .event-card{max-width:100%;} 
+      nav{width:95%;} 
+      .modern-search-container {
+        flex-direction: column;
+        padding: 24px;
+      }
+      .search-divider {
+        display: none;
+      }
+      .search-item {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <div style="display:flex;align-items:center;gap:12px;">
+  <span class="logo" style="font-family:sans-serif;font-weight:900;font-size:24px;letter-spacing:2px;line-height:0.8;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,orange,orange);padding:10px 24px;clip-path:polygon(0 0,100% 0,100% 90%,90% 100%,0 100%);">TicketMallu</span>
+</div>
+
+
+      <ul>
+        <li><a href="{% url 'event-list' %}" style="font-family: 'Poppins', sans-serif; font-weight: 500;">HOME</a></li>
+        <li><a href="#about-us" style="font-family: 'Poppins', sans-serif; font-weight: 400;">ABOUT US</a></li>
+        <li><a href="#events" style="font-family: 'Poppins', sans-serif; font-weight: 400;">EVENTS</a></li>
+        
+        <li><a href="#" style="font-family: 'Poppins', sans-serif; font-weight: 400;">CONTACT US</a></li>
+      </ul>
+
+      <div>
+        {% if user.is_authenticated %}
+          {% if user.is_superuser %}
+            <a href="{% url 'event-create' %}" class="cta-btn"  style=" background: #ffd700; color: black; font-family: 'Poppins', sans-serif; font-weight: 500;">CREATE&nbsp;EVENT</a>
+          {% endif %}
+            {% if not user.is_superuser %}
+            <a href="{% url 'booking-list' %}" class="cta-btn" style="background:#ffd700; color: black; margin-right:8px; font-family: 'Poppins', sans-serif; font-weight: 500;">MY BOOKINGS</a>
+            {% endif %}
+            <a href="{% url 'login' %}" class="cta-btn" style="background:#ffd700; color: black; font-family: 'Poppins', sans-serif; font-weight: 500;">LOGOUT</a>
+          
+        {% else %}
+          <a href="{% url 'login' %}" class="cta-btn" style="background:#ffd700; color: black; margin-right:10px; font-family: 'Poppins', sans-serif; font-weight: 500;">LOGIN</a>
+          
+        {% endif %}
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="subtitle" style="font-family: 'Pacifico', cursive; font-weight: 500; font-size: 30px;">The Leading Regional Events Platform</div>
+    <h1  style="font-family: 'Poppins', sans-serif;">Discover Exclusive Events In Your City</h1>
+
+    <!-- Modern Search Bar -->
+    <form method="get" class="modern-search-container">
+      <!-- Search Event -->
+      <div class="search-item">
+        <span class="material-icons" >search</span>
+        <input type="text" name="q" placeholder="Search Event" value="{{ query }}">
+      </div>
+      
+      <div class="search-divider"></div>
+      
+      <!-- Search Location -->
+      <div class="search-item">
+        <span class="material-icons">location_on</span>
+        <select name="location">
+          <option value=""  style="font-family: 'Poppins', sans-serif;">Search Location</option>
+          <option value="Thiruvananthapuram" {% if request.GET.location == "Thiruvananthapuram" %}selected{% endif %}>Thiruvananthapuram</option>
+          <option value="Kochi" {% if request.GET.location == "Kochi" %}selected{% endif %}>Kochi</option>
+          <option value="Kozhikode" {% if request.GET.location == "Kozhikode" %}selected{% endif %}>Kozhikode</option>
+          <option value="Thrissur" {% if request.GET.location == "Thrissur" %}selected{% endif %}>Thrissur</option>
+          <option value="Alappuzha" {% if request.GET.location == "Alappuzha" %}selected{% endif %}>Alappuzha</option>
+        </select>
+        <span class="material-icons" style="color:#888;">arrow_drop_down</span>
+      </div>
+      
+      <div class="search-divider"></div>
+      
+      <!-- Search Button -->
+      <button type="submit" class="search-button">
+        <span class="material-icons">search</span>
+      </button>
+      
+      {% if query or date_filter or request.GET.location or request.GET.category %}
+        <a href="{% url 'event-list' %}" class="clear-btn">Clear</a>
+      {% endif %}
+    </form>
+  </section>
+
+  <!-- Flash Messages -->
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <!-- Category Filter Section -->
+  
+  <!-- Events Grid -->
+  <section id="events">
+    <div class="section-title" style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 24px; margin-bottom: 20px;">Available Events</div>
+    <div class="events-grid">
+      {% for event in events %}
+        <div class="event-card">
+          {% if event.image %}
+            <div class="event-card-image">
+              <img src="{{ event.image.url }}" alt="{{ event.title }}">
+            </div>
+          {% else %}
+            <div class="event-card-image" style="background: linear-gradient(135deg, #fe9837 0%, #e67f1c 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 3em;">
+              🎫
+            </div>
+          {% endif %}
+          
+          <div class="event-card-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <h4 style="margin:0; flex:1; font-family: 'Poppins', sans-serif; font-weight: 600; color:#fe9837;">
+    <span class="material-icons" style="font-size: 20px; vertical-align: middle; margin-right: 4px;">location_on</span>
+    {{ event.location }}
+</h4>
+              <div style="font-size:1.1em; font-weight:600; color:#fe9837; white-space:nowrap; margin-left:10px;">₹{{ event.price }}</div>
+            </div>
+            <h3 style="font-family: 'Poppins', sans-serif; font-weight: 400;"> {{ event.title }}</h3>
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:10px; font-size:0.9em; color:#666;">
+              
+            </div>
+            <div class="event-date" style="font-family: 'Poppins', sans-serif; font-weight: 500; color: black;">{{ event.date }}</div>
+            <div class="event-seats" style="font-family: 'Poppins', sans-serif; font-weight: 500; color: black;">{{ event.available_seats }} seats available</div>
+
+            <div class="actions">
+              {% if user.is_authenticated and not user.is_superuser %}
+                <a href="{% url 'seat-selector' event.id %}" style="font-family: 'Poppins', sans-serif; font-weight: 500;">Book Seats</a>
+              {% elif not user.is_authenticated %}
+                <a href="{% url 'login' %}" style="background:#444; font-family: 'Poppins', sans-serif; font-weight: 500; color: white;">Login to Book</a>
+              {% endif %}
+
+              {% if user.is_authenticated and user.is_superuser %}
+                <a href="{% url 'event-update' event.pk %}" style="font-family: 'Poppins', sans-serif; font-weight: 500;">Edit</a>
+                <form action="{% url 'event-delete' event.pk %}" method="post" style="display:inline; flex: 1; min-width: 80px;">
+                  {% csrf_token %}
+                  <button type="submit" style="font-family: 'Poppins', sans-serif; font-weight: 500;">Delete</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <p>No events found.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Contact Section for Organizers -->
+  <section style="background: linear-gradient(135deg, #e8d4f8 0%, #d4c5e8 100%); padding:80px 20px; margin-top:60px; position:relative; overflow:hidden;">
+    <div style="max-width:1100px; margin:auto; display:flex; align-items:center; gap:60px; position:relative; z-index:2;">
+      <div style="flex:1; text-align:left;">
+        <div style="font-size:1.3em; color:#764ba2; font-style:italic; margin-bottom:15px; font-weight:500;">Dear Organisers,</div>
+        <h2 style="font-size:2.8em; color:#17223b; margin:0 0 30px 0; font-weight:700; line-height:1.2;">Want to host your Event on our Platform?</h2>
+        <a href="#" style="display:inline-block; background:#ffd700; color:#17223b; padding:14px 32px; border-radius:6px; text-decoration:none; font-weight:600; font-size:1em; transition:all 0.3s ease;">CONTACT US</a>
+      </div>
+      <div style="flex:1; text-align:center; position:relative;">
+        <div style="font-size:3em;">👤</div>
+        <div style="position:absolute; right:0; top:20%; width:40px; height:40px; background:#764ba2; border-radius:50%;"></div>
+        <div style="position:absolute; right:60px; top:40%; width:25px; height:25px; background:#764ba2; border-radius:50%;"></div>
+        <div style="position:absolute; right:40px; bottom:30%; width:30px; height:30px; background:#764ba2; border-radius:50%;"></div>
+        <div style="position:absolute; right:100px; top:10%; width:20px; height:20px; background:#764ba2; border-radius:50%;"></div>
+        <div style="position:absolute; right:20px; bottom:50%; width:35px; height:35px; background:#764ba2; border-radius:50%;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Us Section -->
+  <section id="about-us" style="background:#f9f9f9; padding:60px 20px; margin-top:0;">
+    <div style="max-width:1100px; margin:auto; text-align:center;">
+      <div style="font-size:27px; color:#ffa500; font-family: 'Pacifico', cursive; margin-bottom:15px; font-weight:500;">About Us</div>
+      <h2 style="font-size:25px; color:#17223b; margin:0 0 30px 0; font-weight:700; font-family: 'Poppins', sans-serif;">Why Choose <span class="logo" style="display:inline-block; width:7cm; text-align:center;
+font-family:sans-serif; font-weight:900; font-size:24px; letter-spacing:2px; 
+line-height:0.8; text-transform:uppercase; color:#fff; 
+background:linear-gradient(90deg,orange,orange);
+padding:10px 18px; clip-path:polygon(0 0,100% 0,100% 90%,90% 100%,0 100%);">
+TicketMallu
+</span>
+</h2>
+      <p style="font-size:18px; color:#555; line-height:1.6; margin-bottom:20px; max-width:900px; margin-left:auto; margin-right:auto; font-family: 'Poppins', sans-serif;">
+        TicketMallu is your trusted partner for discovering, booking, and experiencing unforgettable events. From cultural festivals and global forums to business networking meet-ups and entertainment shows, TicketMallu makes event access seamless and simple.
+      </p>
+
+      <p style="font-size:18px; color:#555; line-height:1.6; margin-bottom:50px; max-width:900px; margin-left:auto; margin-right:auto; font-family: 'Poppins', sans-serif;">
+        We are more than just a ticketing platform — we are a bridge that connects people with experiences that inspire, entertain, and create lifelong memories.
+      </p>
+      
+      <div style="display:flex; flex-wrap:wrap; gap:40px; justify-content:center; margin-top:40px;">
+        <div style="flex:1; min-width:200px; max-width:250px;">
+          <div style="font-size:3em; margin-bottom:15px;">✅</div>
+          <h3 style="color:#17223b; font-size:1.25em; margin:0 0 10px 0;">Easy Booking</h3>
+          <p style="color:#666; font-size:0.95em; font-family: 'Poppins', sans-serif;">A smooth and secure process to reserve your spot in just a few clicks.</p>
+        </div>
+        
+        <div style="flex:1; min-width:200px; max-width:250px;">
+          <div style="font-size:3em; margin-bottom:15px;">📅</div>
+          <h3 style="color:#17223b; font-size:1.25em; margin:0 0 10px 0;">Diverse Events</h3>
+          <p style="color:#666; font-size:0.95em; font-family: 'Poppins', sans-serif;">From global summits to local gatherings, explore events across categories.</p>
+        </div>
+        
+        <div style="flex:1; min-width:200px; max-width:250px;">
+          <div style="font-size:3em; margin-bottom:15px;">🛡️</div>
+          <h3 style="color:#17223b; font-size:1.25em; margin:0 0 10px 0;">Trusted Platform</h3>
+          <p style="color:#666; font-size:0.95em; font-family: 'Poppins', sans-serif;">Secure transactions and verified event organizers you can trust.</p>
+        </div>
+        
+        <div style="flex:1; min-width:200px; max-width:250px;">
+          <div style="font-size:3em; margin-bottom:15px;">👥</div>
+          <h3 style="color:#17223b; font-size:1.25em; margin:0 0 10px 0;">Community First</h3>
+          <p style="color:#666; font-size:0.95em; font-family: 'Poppins', sans-serif;">Helping organisers reach audiences and participants find events.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact-us">
+    <div class="footer-content">
+      <div class="footer-col">
+        <h4>Ticketnadu</h4>
+        <p>By DigiNadu Global Technology — making events seamless and trusted.</p>
+        <div style="margin-top:12px;"><strong>CALL US</strong>: +91-8152815281</div>
+        <div class="footer-social">
+          <a href="#">LI</a>
+          <a href="#">IG</a>
+          <a href="#">FB</a>
+          <a href="#">X</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Useful Links</h4>
+        <ul class="footer-links">
+          <li><a href="{% url 'event-list' %}">Home</a></li>
+          <li><a href="#about-us">About</a></li>
+          <li><a href="#events">Events</a></li>
+          <li><a href="{% url 'login' %}">Login</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Policies</h4>
+        <ul class="policy-links">
+          <li><a href="#">Cookies Policy</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Refund Policy</a></li>
+          <li><a href="#">Terms & Conditions</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2025 | All rights reserved | Powered by Ticketnadu</div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment for {{ booking.event.title }}</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #fff;
+      color: #17223b;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .payment-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 6px 30px rgba(0,0,0,0.08);
+      padding: 40px 50px;
+      max-width: 480px;
+      width: 90%;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .payment-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 36px rgba(0,0,0,0.12);
+    }
+
+    h1 {
+      font-size: 1.8em;
+      font-weight: 600;
+      color: #17223b;
+      margin-bottom: 15px;
+    }
+
+    p {
+      font-size: 1em;
+      color: #333;
+      margin: 10px 0;
+    }
+
+    .highlight {
+      color: #fe9837;
+      font-weight: 600;
+    }
+
+    #rzp-button1 {
+      background: #fe9837;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 30px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 25px;
+      transition: all 0.3s ease;
+    }
+
+    #rzp-button1:hover {
+      background: #e67f1c;
+      transform: scale(1.03);
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 24px;
+      color: #17223b;
+      background: #ffd700;
+      padding: 8px 16px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 15px;
+      width: 100%;
+      text-align: center;
+      font-size: 0.9em;
+      color: #777;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="payment-card">
+    <div>
+      <span class="logo" style="display:inline-block; width:7cm; text-align:center;
+font-family:sans-serif; font-weight:900; font-size:24px; letter-spacing:2px; 
+line-height:0.8; text-transform:uppercase; color:#fff; 
+background:linear-gradient(90deg,orange,orange);
+padding:10px 18px; clip-path:polygon(0 0,100% 0,100% 90%,90% 100%,0 100%);">
+TicketMallu
+</span>
+    </div>
+    <h1>Payment for <span class="highlight">{{ booking.event.title }}</span></h1>
+    <p>Seats booked: <span class="highlight">{{ booking.seats_booked }}</span></p>
+    <p>Total Amount: <span class="highlight">₹{{ amount|floatformat:2 }}</span></p>
+
+    <button id="rzp-button1">Pay Now</button>
+  </div>
+
+  <footer>© 2025 | Zomato | Secure Payments</footer>
+
+  <script>
+    var options = {
+      "key": "{{ razorpay_key }}",
+      "amount": "{{ amount }}",
+      "currency": "INR",
+      "name": "{{ booking.event.title }}",
+      "description": "Seat Booking Payment",
+      "order_id": "{{ order_id }}",
+      "handler": function (response) {
+        fetch("{% url 'payment-success' %}", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(response)
+        }).then(() => window.location.href = "{% url 'booking-list' %}");
+      },
+      "theme": { "color": "#fe9837" }
+    };
+    var rzp1 = new Razorpay(options);
+    document.getElementById('rzp-button1').onclick = function(e){
+        rzp1.open();
+        e.preventDefault();
+    }
+  </script>
+</body>
+</html>

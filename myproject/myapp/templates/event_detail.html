@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ event.title }}</title>
+</head>
+<body>
+  <h1>{{ event.title }}</h1>
+
+  <p><strong>Date:</strong> {{ event.date }}</p>
+  <p><strong>Location:</strong> {{ event.location }}</p>
+  <p><strong>Total Seats:</strong> {{ event.total_seats }}</p>
+  <p><strong>Available Seats:</strong> {{ event.available_seats }}</p>
+
+  {% if user.is_authenticated and user.is_superuser %}
+    <p>
+      <a href="{% url 'event-update' event.pk %}">Edit</a> |
+      <form action="{% url 'event-delete' event.pk %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Delete</button>
+      </form>
+    </p>
+  {% endif %}
+
+  <p><a href="{% url 'event-list' %}">Back to all events</a></p>
+</body>
+</html>

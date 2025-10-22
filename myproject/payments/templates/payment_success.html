@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment Successful</title>
+</head>
+<body>
+  <h1>Payment Successful ✅</h1>
+  <p>Thank you {{ payment.user.username }} for your payment!</p>
+  <p>Booking for: {{ payment.booking.event.title }}</p>
+  <p>Amount Paid: ₹{{ payment.amount }}</p>
+  <a href="{% url 'booking-list' %}">Go to My Bookings</a>
+</body>
+</html>

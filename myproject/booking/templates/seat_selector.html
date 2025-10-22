@@ -1,0 +1,440 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Seats for {{ event.title }}</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: radial-gradient(ellipse at center, #f8f6ff 60%, #f1eafc 100%);
+            color: #333; 
+            min-height: 100vh;
+        }
+
+        /* Header matching main page */
+        header { 
+            background: #fff; 
+            padding: 20px 0; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+        }
+        
+        nav { 
+            width: 90%; 
+            margin: auto; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        
+        .logo { 
+            font-weight: 700; 
+            font-size: 24px; 
+            color: #17223b; 
+            background: #ffd700; 
+            padding: 8px 16px; 
+            border-radius: 4px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        
+        nav ul { 
+            display: flex; 
+            gap: 32px; 
+            list-style: none; 
+            margin: 0; 
+            padding: 0; 
+            align-items: center; 
+        }
+        
+        nav a { 
+            color: #222; 
+            text-decoration: none; 
+            font-weight: 600; 
+            font-size: 14px; 
+            transition: color 0.3s; 
+        }
+        
+        nav a:hover { 
+            color: #e91e63; 
+        }
+        
+        .cta-btn { 
+            background: #ffd700; 
+            color: #000; 
+            padding: 12px 24px; 
+            border-radius: 4px; 
+            text-decoration: none; 
+            font-weight: 600; 
+            transition: all 0.3s ease; 
+        }
+        
+        .cta-btn:hover { 
+            background: #ffed4e; 
+        }
+
+        /* Container */
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 6px 32px rgba(180, 168, 245, 0.16);
+        }
+
+        h1 { 
+            text-align: center; 
+            margin-bottom: 10px;
+            color: #17223b;
+            font-size: 2em;
+            font-weight: 700;
+        }
+        
+        .event-info {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .event-info strong {
+            color: #fe9837;
+            font-weight: 600;
+        }
+
+        /* Screen */
+        .screen {
+            background: none;
+            color: black;
+            text-align: center;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            font-weight: 600;
+            font-size: 1.1em;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Seat Grid */
+        .seat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 12px;
+            justify-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 16px;
+        }
+
+        .seat {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            color: #fff;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .seat::before {
+            content: '💺';
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.3;
+        }
+
+        .available { 
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            border: 2px solid transparent;
+        }
+        
+        .available:hover { 
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+        }
+        
+        .selected { 
+            background: linear-gradient(135deg, #fe9837 0%, #e67f1c 100%);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 6px 16px rgba(254, 152, 55, 0.4);
+            animation: pulse 0.5s ease;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translateY(-4px) scale(1.05); }
+            50% { transform: translateY(-4px) scale(1.1); }
+        }
+        
+        .booked { 
+            background: linear-gradient(135deg, #9e9e9e 0%, #757575 100%);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        input[type="checkbox"] { 
+            display: none; 
+        }
+
+        /* Seat Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f5f0ff;
+            border-radius: 12px;
+        }
+        
+        .legend div {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        .legend span {
+            width: 35px;
+            height: 35px;
+            display: inline-block;
+            border-radius: 6px;
+        }
+        
+        .legend .available { 
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+        }
+        
+        .legend .selected { 
+            background: linear-gradient(135deg, #fe9837 0%, #e67f1c 100%);
+        }
+        
+        .legend .booked { 
+            background: linear-gradient(135deg, #9e9e9e 0%, #757575 100%);
+        }
+
+        /* Selection Summary */
+        .selection-summary {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #17223b;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        }
+        
+        .selection-summary span {
+            font-size: 1.3em;
+            color: #e91e63;
+        }
+
+        /* Buttons */
+        .btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: #fff;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Messages */
+        .messages { 
+            margin-bottom: 20px;
+            list-style: none;
+        }
+        
+        .messages li { 
+            background: #ffe6e6;
+            color: #d32f2f;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #d32f2f;
+            font-weight: 500;
+        }
+
+        @media(max-width: 900px) {
+            nav { width: 95%; }
+            .container { padding: 20px; }
+            .seat-grid {
+                grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+                gap: 8px;
+            }
+            .seat {
+                width: 45px;
+                height: 45px;
+            }
+            .legend {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <span class="logo" style="display:inline-block; width:7cm; text-align:center;
+font-family:sans-serif; font-weight:900; font-size:24px; letter-spacing:2px; 
+line-height:0.8; text-transform:uppercase; color:#fff; 
+background:linear-gradient(90deg,orange,orange);
+padding:10px 18px; clip-path:polygon(0 0,100% 0,100% 90%,90% 100%,0 100%);">
+TicketMallu
+</span>
+            </div>
+
+            <ul>
+                <li><a href="{% url 'event-list' %}">HOME</a></li>
+                <li><a href="{% url 'event-list' %}#about-us">ABOUT US</a></li>
+                <li><a href="{% url 'event-list' %}#events">EVENTS</a></li>
+            </ul>
+
+            <div>
+                {% if user.is_authenticated %}
+                    {% if not user.is_superuser %}
+                        <a href="{% url 'booking-list' %}" class="cta-btn" style="margin-right:8px;">MY BOOKINGS</a>
+                    {% endif %}
+                    <a href="{% url 'logout' %}" class="cta-btn">LOGOUT</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="cta-btn">LOGIN</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Book Your Seats</h1>
+        <div class="event-info">
+            <strong>{{ event.title }}</strong> | {{ event.location }} | {{ event.date }}
+        </div>
+
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <!-- Screen -->
+        <div class="screen">
+             SCREEN THIS WAY 
+        </div>
+
+        <!-- Seat Legend -->
+        <div class="legend">
+            <div><span class="available"></span> Available</div>
+            <div><span class="selected"></span> Selected</div>
+            <div><span class="booked"></span> Booked</div>
+        </div>
+
+        <!-- Selection Summary -->
+        <div class="selection-summary" id="summary">
+            Selected: <span id="count">0</span> seat(s) | Total: ₹<span id="total">0</span>
+        </div>
+
+        <!-- Seat Selection -->
+        <form method="post" id="seatForm">
+            {% csrf_token %}
+            <div class="seat-grid">
+                {% for seat in seats %}
+                    {% if seat in booked_seats %}
+                        <div class="seat booked" title="Already Booked">{{ seat }}</div>
+                    {% else %}
+                        <label class="seat available" title="Click to select">
+                            {{ seat }}
+                            <input type="checkbox" name="seats" value="{{ seat }}">
+                        </label>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn">Confirm Booking</button>
+            <a href="{% url 'event-list' %}" class="btn btn-secondary" style="margin-top: 10px; display: inline-block;">Cancel</a>
+        </form>
+    </div>
+
+    <script>
+        const pricePerSeat = {{ event.price }};
+        const countSpan = document.getElementById('count');
+        const totalSpan = document.getElementById('total');
+
+        // Interactive seat selection
+        document.querySelectorAll('.seat.available').forEach(label => {
+            label.addEventListener('click', function(e) {
+                e.preventDefault();
+                const checkbox = label.querySelector('input[type="checkbox"]');
+                checkbox.checked = !checkbox.checked;
+                
+                if (checkbox.checked) {
+                    label.classList.add('selected');
+                } else {
+                    label.classList.remove('selected');
+                }
+                
+                updateSummary();
+            });
+        });
+
+        function updateSummary() {
+            const selectedSeats = document.querySelectorAll('input[name="seats"]:checked').length;
+            const total = selectedSeats * pricePerSeat;
+            
+            countSpan.textContent = selectedSeats;
+            totalSpan.textContent = total.toFixed(2);
+        }
+    </script>
+</body>
+</html>
