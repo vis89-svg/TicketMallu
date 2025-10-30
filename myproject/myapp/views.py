@@ -17,7 +17,7 @@ class EventListView(APIView):
     def get(self, request):
         query = request.GET.get('q', '')
         date_filter = request.GET.get('date', '')
-        location_filter = request.GET.get('location', '')  # ✅ ADD THIS
+        location_filter = request.GET.get('location', '')
 
         events = Event.objects.all().order_by('date')
 
@@ -27,7 +27,6 @@ class EventListView(APIView):
         if date_filter:
             events = events.filter(date__date=date_filter)
 
-        # ✅ ADD THIS LOCATION FILTER
         if location_filter:
             events = events.filter(location__iexact=location_filter)
 
@@ -36,7 +35,18 @@ class EventListView(APIView):
             booked_count = Seat.objects.filter(booking__event=event).count()
             event.available_seats = event.total_seats - booked_count
 
-        return Response({'events': events, 'query': query, 'date_filter': date_filter})
+        # ✅ GROUP EVENTS BY CATEGORY (Netflix-style sections)
+        categorized_events = {}
+        for choice_value, choice_label in Event.CATEGORY_CHOICES:
+            category_events = events.filter(category=choice_value)
+            if category_events.exists():  # Only show categories that have events
+                categorized_events[choice_label] = category_events
+
+        return Response({
+            'categorized_events': categorized_events,
+            'query': query,
+            'date_filter': date_filter
+        })
 
 
 class EventDetailView(APIView):
