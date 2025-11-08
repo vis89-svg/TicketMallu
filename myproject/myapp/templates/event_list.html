@@ -641,6 +641,72 @@
   </ul>
   {% endif %}
 
+   <!-- ✅ TRENDING EVENTS SECTION -->
+  <section id="trending" style="margin-top: 40px;">
+    {% if trending_events %}
+      <div class="category-section">
+        <div class="category-header">
+          <h2 class="category-title">Trending Now</h2>
+        </div>
+        
+        <div class="carousel-wrapper">
+          <button class="carousel-arrow left" onclick="scrollCarousel('trending', -1)">
+            <span class="material-icons">chevron_left</span>
+          </button>
+          
+          <div class="events-carousel" id="carousel-trending">
+            {% for event in trending_events %}
+              <div class="event-card">
+                {% if event.image %}
+                  <div class="event-card-image">
+                    <img src="{{ event.image.url }}" alt="{{ event.title }}">
+                  </div>
+                {% else %}
+                  <div class="event-card-image" style="background: linear-gradient(135deg, #fe9837 0%, #e67f1c 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 3em;">
+                    🎫
+                  </div>
+                {% endif %}
+                
+                <div class="event-card-content">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <h4 style="margin:0; flex:1; font-family: 'Poppins', sans-serif; font-weight: 600; color:#fe9837;">
+                      <span class="material-icons" style="font-size: 20px; vertical-align: middle; margin-right: 4px;">location_on</span>
+                      {{ event.location }}
+                    </h4>
+                    <div style="font-size:1.1em; font-weight:600; color:#fe9837; white-space:nowrap; margin-left:10px;">₹{{ event.price }}</div>
+                  </div>
+                  <h3 style="font-family: 'Poppins', sans-serif; font-weight: 400;"> {{ event.title }}</h3>
+                  <div class="event-date" style="font-family: 'Poppins', sans-serif; font-weight: 500; color: black;">{{ event.date }}</div>
+                  <div class="event-seats" style="font-family: 'Poppins', sans-serif; font-weight: 500; color: black;">{{ event.available_seats }} seats available</div>
+
+                  <div class="actions">
+                    {% if user.is_authenticated and not user.is_superuser %}
+                      <a href="{% url 'seat-selector' event.id %}" style="font-family: 'Poppins', sans-serif; font-weight: 500;">Book Seats</a>
+                    {% elif not user.is_authenticated %}
+                      <a href="{% url 'login' %}" style="background:#444; font-family: 'Poppins', sans-serif; font-weight: 500; color: white;">Login to Book</a>
+                    {% endif %}
+
+                    {% if user.is_authenticated and user.is_superuser %}
+                      <a href="{% url 'event-update' event.pk %}" style="font-family: 'Poppins', sans-serif; font-weight: 500;">Edit</a>
+                      <form action="{% url 'event-delete' event.pk %}" method="post" style="display:inline; flex: 1; min-width: 80px;">
+                        {% csrf_token %}
+                        <button type="submit" style="font-family: 'Poppins', sans-serif; font-weight: 500;">Delete</button>
+                      </form>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+          
+          <button class="carousel-arrow right" onclick="scrollCarousel('trending', 1)">
+            <span class="material-icons">chevron_right</span>
+          </button>
+        </div>
+      </div>
+    {% endif %}
+  </section>
+
   <!-- ✅ NETFLIX-STYLE CATEGORY SECTIONS WITH CAROUSEL -->
   <section id="events">
     {% for category_name, events in categorized_events.items %}

@@ -35,7 +35,39 @@ class EventListView(APIView):
             booked_count = Seat.objects.filter(booking__event=event).count()
             event.available_seats = event.total_seats - booked_count
 
-        # ✅ GROUP EVENTS BY CATEGORY (Netflix-style sections)
+       
+        MINIMUM_BOOKINGS = 5  # BOOKING LOGIC 1 -- WORING MODE , mimum to percentage ratio used here 
+        MINIMUM_BOOKING_PERCENTAGE = 20  
+        
+        all_events_with_bookings = Event.objects.annotate(
+            booking_count=Count('booking')
+        ).filter(booking_count__gte=MINIMUM_BOOKINGS)
+        
+        
+        if location_filter:
+            all_events_with_bookings = all_events_with_bookings.filter(location__iexact=location_filter)
+        
+        trending_events = []
+        for event in all_events_with_bookings:
+            booked_count = Seat.objects.filter(booking__event=event).count()
+            available = event.total_seats - booked_count
+            booking_percentage = (booked_count / event.total_seats) * 100
+            
+           
+            if available > 0 and booking_percentage >= MINIMUM_BOOKING_PERCENTAGE:
+                event.available_seats = available
+                event.booking_count = booked_count
+                event.booking_percentage = booking_percentage
+                trending_events.append(event)
+        
+        # Booking logic percnetgae , 2 nd solution WORKING . 
+        trending_events = sorted(
+            trending_events, 
+            key=lambda e: (e.booking_percentage, e.booking_count), 
+            reverse=True
+        )[:6]
+
+       
         categorized_events = {}
         for choice_value, choice_label in Event.CATEGORY_CHOICES:
             category_events = events.filter(category=choice_value)
@@ -44,30 +76,25 @@ class EventListView(APIView):
 
         return Response({
             'categorized_events': categorized_events,
+            'trending_events': trending_events,
             'query': query,
             'date_filter': date_filter
         })
 
 
 class EventDetailView(APIView):
-    """
-    Public view – shows event details.
-    """
+   
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'event_detail.html'
 
     def get(self, request, pk):
         event = get_object_or_404(Event, pk=pk)
-        # ✅ Calculate available_seats dynamically
         booked_count = Seat.objects.filter(booking__event=event).count()
         event.available_seats = event.total_seats - booked_count
         return Response({'event': event})
 
 
 class EventCreateView(APIView):
-    """
-    Only superusers can create events.
-    """
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'event_form.html'
 
@@ -84,7 +111,6 @@ class EventCreateView(APIView):
             messages.error(request, "You are not authorized to create events.")
             return redirect('event-list')
 
-        # ✅ Combine request.POST and request.FILES
         data = request.POST.copy()
         data.update(request.FILES)
         
@@ -95,11 +121,8 @@ class EventCreateView(APIView):
             return redirect('event-list')
         return Response({'serializer': serializer})
 
-
-class EventUpdateView(APIView):
-    """
-    Only superusers can update events.
-    """
+#superuser section : EDIT DELETE APPLICATION - admin , 12345 PASSWORD 
+class EventUpdateView(APIView): 
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'event_form.html'
 
@@ -119,7 +142,7 @@ class EventUpdateView(APIView):
 
         event = get_object_or_404(Event, pk=pk)
         
-        # ✅ Combine request.POST and request.FILES
+        
         data = request.POST.copy()
         data.update(request.FILES)
         
@@ -132,9 +155,7 @@ class EventUpdateView(APIView):
 
 
 class EventDeleteView(APIView):
-    """
-    Only superusers can delete events.
-    """
+  
     def post(self, request, pk):
         if not request.user.is_authenticated or not request.user.is_superuser:
             messages.error(request, "You are not authorized to delete events.")

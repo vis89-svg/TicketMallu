@@ -12,9 +12,9 @@ from myapp.models import Event
 from .models import Booking, Seat
 from .serializers import BookingSerializer
 
-# ----------------------------
+
 # Registration
-# ----------------------------
+
 class RegisterView(CreateView):
     form_class = UserCreationForm
     template_name = 'register.html'
@@ -24,9 +24,9 @@ class RegisterView(CreateView):
         messages.success(self.request, "Account created! Please login.")
         return super().form_valid(form)
 
-# ----------------------------
+
 # Booking List
-# ----------------------------
+
 class BookingListView(LoginRequiredMixin, APIView):
     login_url = '/login/'
     renderer_classes = [TemplateHTMLRenderer]
@@ -36,9 +36,8 @@ class BookingListView(LoginRequiredMixin, APIView):
         bookings = Booking.objects.filter(user=request.user).order_by('-booking_date')
         return Response({'bookings': bookings})
 
-# ----------------------------
-# Seat Selector / Booking
-# ----------------------------
+# Seat Selector & NOTION RAZORPAY
+
 class SeatSelectorView(LoginRequiredMixin, APIView):
     login_url = '/login/'
     renderer_classes = [TemplateHTMLRenderer]
@@ -64,7 +63,7 @@ class SeatSelectorView(LoginRequiredMixin, APIView):
                 messages.error(request, f"Seat {seat} is already booked.")
                 return redirect('seat-selector', event_id=event.id)
 
-        # Create booking and seats
+        
         booking = Booking.objects.create(user=request.user, event=event, seats_booked=len(selected_seats))
         for seat in selected_seats:
             Seat.objects.create(booking=booking, seat_number=int(seat))
@@ -74,7 +73,7 @@ class SeatSelectorView(LoginRequiredMixin, APIView):
 
         messages.success(request, f"Successfully booked seats: {', '.join(selected_seats)}")
 
-        # ✅ Redirect to Razorpay payment page
+       
         return redirect('start-payment', booking_id=booking.id)
 
 def logout_view(request):
